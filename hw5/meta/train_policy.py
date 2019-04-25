@@ -75,6 +75,11 @@ def build_rnn(x, h, output_size, scope, n_layers, size, activation=tf.tanh, outp
     #                           ----------PROBLEM 2----------
     #====================================================================================#
     # YOUR CODE HERE
+    x = build_mlp(x, output_size, scope, n_layers, size, activation, activation, regularizer)
+    gru = tf.keras.layers.GRU(output_size, activation, return_state=True)
+    x, h = gru(x, h)
+    return x, h
+
 
 def build_policy(x, h, output_size, scope, n_layers, size, gru_size, recurrent=True, activation=tf.tanh, output_activation=None):
     """
@@ -377,27 +382,27 @@ class Agent(object):
                 # first meta ob has only the observation
                 # set a, r, d to zero, construct first meta observation in meta_obs
                 # YOUR CODE HERE
-
+                meta_obs[self.history + ep_steps - 1, :self.ob_dim] = ob
                 steps += 1
 
             # index into the meta_obs array to get the window that ends with the current timestep
             # please name the windowed observation `in_` for compatibilty with the code that adds to the replay buffer (lines 418, 420)
             # YOUR CODE HERE
-
+            in_ = meta_obs[ep_steps: self.history + ep_steps] # window length history
             hidden = np.zeros((1, self.gru_size), dtype=np.float32)
 
             # get action from the policy
             # YOUR CODE HERE
-
+            ac = self.sess.run(self.sy_sampled_ac, feed_dict={self.sy_ob_no: [in_], self.sy_hidden: hidden})[0]
             # step the environment
             # YOUR CODE HERE
-
+            next_ob, rew, done, _ = env.step(ac)
             ep_steps += 1
 
             done = bool(done) or ep_steps == self.max_path_length
             # construct the meta-observation and add it to meta_obs
             # YOUR CODE HERE
-
+            meta_obs[self.history + ep_steps - 1] = np.concatenate((next_ob, ac, [rew], [done]))
             rewards.append(rew)
             steps += 1
 

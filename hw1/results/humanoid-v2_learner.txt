@@ -1,0 +1,11 @@
+- 100 rollouts data, 30 iterations
+mean return 824.0138622353653
+std of return 262.0596570940009
+
+- 100 rollouts data, 100 iterations
+mean return 2389.1906605836216
+std of return 2500.980262723634
+
+- 100 rollouts data, 30 iterations, dagger:
+mean return 1563.0636274660587
+std of return 1459.285765429875

@@ -74,14 +74,13 @@ class GaussianPolicy(Network):
             if not self._reparameterize:
                 ### Problem 1.3.A
                 ### YOUR CODE HERE
-                raise NotImplementedError
+                raw_actions = tf.stop_gradient(raw_actions)
             log_probs = distribution.log_prob(raw_actions)
             log_probs -= self._squash_correction(raw_actions)
 
-            actions = None
             ### Problem 2.A
             ### YOUR CODE HERE
-            raise NotImplementedError
+            actions = tf.tanh(raw_actions)
 
             return actions, log_probs
 
@@ -94,7 +93,7 @@ class GaussianPolicy(Network):
     def _squash_correction(self, raw_actions):
         ### Problem 2.B
         ### YOUR CODE HERE
-        raise NotImplementedError
+        return tf.reduce_sum(tf.log(4.0) - 2.0 * tf.nn.softplus(2.0 * raw_actions) + 2.0 * raw_actions, axis=1)
 
     def eval(self, observation):
         assert self.built and observation.ndim == 1

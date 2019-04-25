@@ -27,6 +27,8 @@ class PointEnv(Env):
         #                           ----------PROBLEM 3----------
         #====================================================================================#
         # YOUR CODE HERE
+        if is_evaluation:
+            
         x = np.random.uniform(-10, 10)
         y = np.random.uniform(-10, 10)
         self._goal = np.array([x, y])
